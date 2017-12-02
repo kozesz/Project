@@ -11,10 +11,19 @@ public class Movie {
     private MovieType type;
     private Date movieHour;
     private String rating;
-    private CinemaHall cinemaHall;
+
+    public void setCinemaHall(String cinemaHall) {
+        this.cinemaHall = cinemaHall;
+    }
+
+    public String getCinemaHall() {
+        return cinemaHall;
+    }
+
+    private String cinemaHall;
     private Date date;
 
-    public Date getDate()  {
+    public Date getDate() {
         return date;
     }
 
@@ -24,18 +33,16 @@ public class Movie {
 
     public Date getformatedDate() throws ParseException {
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-
         Date d = dt.parse(String.valueOf(getDate()));
         return d;
     }
 
 
-    public Movie(String title, MovieGenre genre, MovieType type, String rating, Date date) {
+    public Movie(String title, MovieGenre genre, MovieType type, String rating) {
         this.title = title;
         this.genre = genre;
         this.type = type;
         this.rating = rating;
-        this.date = date;
     }
 
     public String getTitle() {
@@ -78,13 +85,7 @@ public class Movie {
         this.rating = rating;
     }
 
-    public CinemaHall getCinemaHall() {
-        return cinemaHall;
-    }
 
-    public void setCinemaHall(CinemaHall cinemaHall) {
-        this.cinemaHall = cinemaHall;
-    }
 
     @Override
     public String toString() {
@@ -94,7 +95,6 @@ public class Movie {
                 ", type=" + type +
                 ", movieHour=" + movieHour +
                 ", rating='" + rating + '\'' +
-                ", date=" + date +
                 '}';
     }
 }
