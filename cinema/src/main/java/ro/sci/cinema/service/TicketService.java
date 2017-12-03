@@ -63,16 +63,10 @@ public class TicketService {
             errors.add("TicketType is Empty");
         }
 
-        if (ticket.getSeat() == null) {
-            errors.add("Seat is Empty");
-        }
-
         if (ticket.getMovie() == null) {
             errors.add("Movie is Empty");
         }
-        if (ticket.getCinema() == null) {
-            errors.add("Cinema is Empty");
-        }
+
 
         /*if (ticket.getDate() == null) {
             errors.add("Date is Empty");

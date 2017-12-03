@@ -16,7 +16,6 @@ public class CinemaApplication {
 
         c.readMySeats();
 
-
         cinema.selectMovieDay();
 
         cinema.readMyMovies();
@@ -26,6 +25,14 @@ public class CinemaApplication {
         cinema.displayMovieHours();
         System.out.println(cinema.selectMovieHour());
         cinema.displayCinemaHall();
+        System.out.println(c.availableSeats());
+        c.selectSeat(cinema.selectTicketQuantity());
+        System.out.println(cinema.selectTicketType());
+        cinema.addClient();
+        cinema.displayReservation();
+        cinema.reserveTicket();
+
+
         //SpringApplication.run(CinemaApplication.class, args);
     }
 }

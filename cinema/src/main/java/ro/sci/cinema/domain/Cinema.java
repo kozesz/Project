@@ -10,45 +10,28 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Cinema {
-    private Client client;
-    private CinemaName name;
+    private Client theClient;
     private Date movieDay;
-
     private Ticket ticket;
-
     private Movie movie;
     public Movie selectedMovie;
     public Date selectedDate;
+    public int ticketQuantity;
 
     public Date selectMovieDay() throws ParseException {
         System.out.println("Please enter the date (yyyy-MM-dd) ");
         Scanner scanner = new Scanner(System.in);
         String d = scanner.nextLine();
-
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
         Date date = dt.parse(d);
-
         System.out.println(dt.format(date));
         selectedDate = date;
-
-
         return date;
-    }
-
-    public void readMySeats() throws IOException {
-        SeatCSVReader seatReader = new SeatCSVReader(new BufferedReader(new FileReader("Seats.csv")));
-        List<Seat> mySeats = seatReader.readSeats();
-        for (Seat seat : mySeats) {
-            System.out.println("Row " + seat.getRow() + " Number " + seat.getNumber() + " Available " + seat.isAvailable());
-        }
-        seatReader.close();
     }
 
     ArrayList<Movie> allMovies = new ArrayList<>();
 
     public void readMyMovies() throws IOException, ParseException {
-
-
         MovieCSVReader movieReader = new MovieCSVReader(new BufferedReader(new FileReader("Movies.csv")));
         List<Movie> myMovies = movieReader.readMovies();
         for (Movie movie : myMovies) {
@@ -64,12 +47,10 @@ public class Cinema {
         for (Movie movie : allMovies) {
             if (date.equals(selectedDate)) {
                 listMovies.add(movie);
-
             }
         }
         return listMovies;
     }
-
 
     public Movie selectMovie() {
         System.out.println("Please select the movie by title: ");
@@ -118,27 +99,55 @@ public class Cinema {
         }
     }
 
-    public void selectTicket() {
-
+    public int selectTicketQuantity() {
+        System.out.println("Please add ticket quantity ");
+        Scanner scanner = new Scanner(System.in);
+        ticketQuantity = Integer.parseInt(scanner.nextLine());
+        return ticketQuantity;
     }
 
-    public Seat selectSeat() {
-        System.out.println("Please select your seats ");
-        // from availableSeats()
-        return null;
+    ArrayList<TicketType> ticketTypes = new ArrayList<>();
+
+    public ArrayList<TicketType> selectTicketType() {
+        for (int i = 0; i < ticketQuantity; i++) {
+            System.out.println("Please select the ticket type (ADULT, STUDENT, CHILD, PENSIONER");
+            Scanner scanner = new Scanner(System.in);
+            ticketTypes.add(TicketType.valueOf(scanner.nextLine()));
+        }
+        return ticketTypes;
     }
+
 
     public Client addClient() {
-        // Client adds information
-        return null;
+        System.out.println("Please add your first name ");
+        Scanner scanner = new Scanner(System.in);
+        String firstName = scanner.nextLine();
+        System.out.println("Please add your last name ");
+        String lastName = scanner.nextLine();
+        System.out.println("Please add your phone number ");
+        String phoneNumber = scanner.nextLine();
+        System.out.println("Please add your e-mail ");
+        String email = scanner.nextLine();
+        Client client = new Client(firstName, lastName, phoneNumber, email);
+        theClient = client;
+        return theClient;
     }
 
-    public Ticket reserveTicket() {
+    private Ticket reservedTicket;
 
+    public Ticket reserveTicket() {
+        reservedTicket = new Ticket(theClient, ticketQuantity, ticketTypes, selectedMovie);
         return null;
     }
 
     public void displayReservation() {
+        System.out.println("\nDate " + selectedDate);
+        System.out.println("\nMovie " + selectedMovie);
+        System.out.println("\nHour " + selectedMovie.getMovieHour());
+        System.out.println("\nTicket quantity " + ticketQuantity);
+        System.out.println("\nTicket types " + ticketTypes);
+        System.out.println("\nCinemaHall " + selectedMovie.getCinemaHall());
+        System.out.println("\nClient" + theClient);
 
     }
 
