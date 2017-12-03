@@ -35,4 +35,13 @@ public class Seat {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "row=" + row +
+                ", number=" + number +
+                ", available=" + available +
+                '}';
+    }
 }
