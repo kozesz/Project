@@ -9,18 +9,7 @@ public class Movie {
     private String title;
     private MovieGenre genre;
     private MovieType type;
-    private Date movieHour;
     private String rating;
-
-    public void setCinemaHall(String cinemaHall) {
-        this.cinemaHall = cinemaHall;
-    }
-
-    public String getCinemaHall() {
-        return cinemaHall;
-    }
-
-    private String cinemaHall;
     private Date date;
 
     public Date getDate() {
@@ -69,14 +58,6 @@ public class Movie {
         this.type = type;
     }
 
-    public Date getMovieHour() {
-        return movieHour;
-    }
-
-    public void setMovieHour(Date movieHour) {
-        this.movieHour = movieHour;
-    }
-
     public String getRating() {
         return rating;
     }
@@ -92,7 +73,6 @@ public class Movie {
                 "title='" + title + '\'' +
                 ", genre=" + genre +
                 ", type=" + type +
-                ", movieHour=" + movieHour +
                 ", rating='" + rating + '\'' +
                 '}';
     }

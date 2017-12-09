@@ -12,12 +12,8 @@ public class CinemaApplication {
 
     public static void main(String[] args) throws ParseException, IOException {
         Cinema cinema = new Cinema();
-        CinemaHall c = new CinemaHall();
 
-        c.readMySeats();
-
-        cinema.selectMovieDay();
-
+        cinema.readProgram();
         cinema.readMyMovies();
 
         System.out.println(cinema.todaysMovies(cinema.selectMovieDay()));
@@ -25,9 +21,10 @@ public class CinemaApplication {
         cinema.displayMovieHours();
         System.out.println(cinema.selectMovieHour());
         cinema.displayCinemaHall();
-        System.out.println(c.availableSeats());
-        c.selectSeat(cinema.selectTicketQuantity());
+        cinema.selectTicketQuantity();
         System.out.println(cinema.selectTicketType());
+        cinema.displayAvailableSeats();
+        cinema.selectSeats();
         cinema.addClient();
         cinema.displayReservation();
         cinema.reserveTicket();

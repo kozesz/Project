@@ -38,9 +38,11 @@ public class MoviesProgramForCurrentWeekCSVReader extends Reader {
                 String h = tokens[2];
                 SimpleDateFormat hr = new SimpleDateFormat("HH:mm");
                 Date hour = hr.parse(h);
-                String hall = tokens[3];
+                String hallName = tokens[3];
+                CinemaHall c = new CinemaHall();
+                c.setName(hallName);
 
-                MoviesFromProgram moviesFromProgram = new MoviesFromProgram(date, title, hour, hall);
+                MoviesFromProgram moviesFromProgram = new MoviesFromProgram(date, title, hour, c);
                 weeklyProgram.add(moviesFromProgram);
                 line = reader.readLine();
 
