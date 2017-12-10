@@ -52,7 +52,7 @@ public class TicketService {
     }
 
     private void validate(Ticket ticket) throws ValidationException {
-        Date currentDate = new Date();
+        /*Date currentDate = new Date();
         List<String> errors = new LinkedList<String>();
 
         if (ticket.getClient() == null) {
@@ -68,17 +68,17 @@ public class TicketService {
         }
 
 
-        /*if (ticket.getDate() == null) {
+        if (ticket.getDate() == null) {
             errors.add("Date is Empty");
         } else {
             if (currentDate.after(ticket.getDate())) {
                 errors.add("Date is in the past");
             }
-        }*/
+        }
 
         if (!errors.isEmpty()) {
             throw new ValidationException(errors.toArray(new String[]{}));
-        }
+        }*/
     }
 
     public TicketDAO getDao() {

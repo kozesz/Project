@@ -10,13 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Cinema {
-    private Client theClient;
-    private Date movieDay;
-    private Ticket ticket;
-    private Movie movie;
-    public Movie selectedMovie;
-    public Date selectedDate;
-    public int ticketQuantity;
+    private CinemaHall cinemaHall = new CinemaHall();
+    private ArrayList<MoviesFromProgram> program = new ArrayList<>();
+    private Ticket ticketInProgress = new Ticket();
+    private ArrayList<Movie> allMovies = new ArrayList<>();
+    private ArrayList<Movie> listMovies = new ArrayList<>();
+    private ArrayList<Ticket> historyOfReservations = new ArrayList<>();
 
     public Date selectMovieDay() throws ParseException {
         System.out.println("Please enter the date (yyyy-MM-dd) ");
@@ -25,11 +24,9 @@ public class Cinema {
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
         Date date = dt.parse(d);
         System.out.println(dt.format(date));
-        selectedDate = date;
-        return date;
+        ticketInProgress.setDate(date);
+        return ticketInProgress.getDate();
     }
-
-    ArrayList<Movie> allMovies = new ArrayList<>();
 
     public void readMyMovies() throws IOException, ParseException {
         MovieCSVReader movieReader = new MovieCSVReader(new BufferedReader(new FileReader("Movies.csv")));
@@ -41,11 +38,9 @@ public class Cinema {
         movieReader.close();
     }
 
-    ArrayList<Movie> listMovies = new ArrayList<>();
-
     public List<Movie> todaysMovies(Date date) throws ParseException {
         for (Movie movie : allMovies) {
-            if (date.equals(selectedDate)) {
+            if (date.equals(ticketInProgress.getDate())) {
                 listMovies.add(movie);
             }
         }
@@ -58,21 +53,24 @@ public class Cinema {
         String title = scanner.nextLine();
         for (Movie movie : listMovies) {
             if (Objects.equals(title, movie.getTitle())) {
-                selectedMovie = movie;
-                System.out.println(selectedMovie);
+                ticketInProgress.setMovie(movie);
+                System.out.println(ticketInProgress.getMovie());
             }
         }
-        return selectedMovie;
+        return ticketInProgress.getMovie();
     }
 
-    ArrayList<Date> selectedMovieHours = new ArrayList<>();
-
-    public void displayMovieHours() throws IOException, ParseException {
+    public void readProgram() throws ParseException, FileNotFoundException {
         MoviesProgramForCurrentWeekCSVReader moviesProgramForCurrentWeekCSVReader = new MoviesProgramForCurrentWeekCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
         for (MoviesFromProgram moviesFromProgram : moviesProgramForCurrentWeekCSVReader.readMoviesProgram()) {
-            if (Objects.equals(selectedMovie.getTitle(), moviesFromProgram.getTitle()) && selectedDate.equals(moviesFromProgram.getDate())) {
-                System.out.println(moviesFromProgram.getHour());
-                selectedMovieHours.add(moviesFromProgram.getHour());
+            program.add(moviesFromProgram);
+        }
+    }
+
+    public void displayMovieHours() throws IOException, ParseException {
+        for (MoviesFromProgram program : program) {
+            if (Objects.equals(ticketInProgress.getMovie().getTitle(), program.getTitle()) && ticketInProgress.getDate().equals(program.getDate())) {
+                System.out.println(program.getHour());
             }
         }
     }
@@ -83,40 +81,60 @@ public class Cinema {
         String h = scanner.nextLine();
         SimpleDateFormat hr = new SimpleDateFormat("HH:mm");
         Date hour = hr.parse(h);
-        if (selectedMovieHours.contains(hour)) {
-            selectedMovie.setMovieHour(hour);
-        } else System.out.println("Invalid hour");
-        return selectedMovie.getMovieHour();
+        for (MoviesFromProgram p : program) {
+            if (p.getTitle().equals(ticketInProgress.getMovie().getTitle()) && p.getHour().equals(hour))
+                ticketInProgress.setHour(hour);
+        }
+        return ticketInProgress.getHour();
     }
 
     public void displayCinemaHall() throws ParseException, FileNotFoundException {
-        MoviesProgramForCurrentWeekCSVReader moviesProgramForCurrentWeekCSVReader = new MoviesProgramForCurrentWeekCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
-        for (MoviesFromProgram moviesFromProgram : moviesProgramForCurrentWeekCSVReader.readMoviesProgram()) {
-            if (Objects.equals(selectedMovie.getTitle(), moviesFromProgram.getTitle()) && selectedDate.equals(moviesFromProgram.getDate()) && selectedMovie.getMovieHour().equals(moviesFromProgram.getHour())) {
-                selectedMovie.setCinemaHall(moviesFromProgram.getHall());
-                System.out.println(selectedMovie.getCinemaHall());
+        for (MoviesFromProgram p : program) {
+            if (p.getTitle().equals(ticketInProgress.getMovie().getTitle()) && ticketInProgress.getDate().equals(p.getDate()) && ticketInProgress.getHour().equals(p.getHour())) {
+
+                ticketInProgress.setCinemaHall(p.getHall());
+                System.out.println(ticketInProgress.getCinemaHall().getName());
             }
         }
+    }
+
+    public void displayAvailableSeats() throws IOException {
+        cinemaHall.readAllSeats();
+        System.out.println(cinemaHall.availableSeats());
     }
 
     public int selectTicketQuantity() {
         System.out.println("Please add ticket quantity ");
         Scanner scanner = new Scanner(System.in);
-        ticketQuantity = Integer.parseInt(scanner.nextLine());
-        return ticketQuantity;
+        ticketInProgress.setQuantity(Integer.parseInt(scanner.nextLine()));
+        return ticketInProgress.getQuantity();
     }
-
-    ArrayList<TicketType> ticketTypes = new ArrayList<>();
 
     public ArrayList<TicketType> selectTicketType() {
-        for (int i = 0; i < ticketQuantity; i++) {
-            System.out.println("Please select the ticket type (ADULT, STUDENT, CHILD, PENSIONER");
+        for (int i = 0; i < ticketInProgress.getQuantity(); i++) {
+            System.out.println("Please select the ticket type (ADULT, STUDENT, CHILD, PENSIONER)");
             Scanner scanner = new Scanner(System.in);
-            ticketTypes.add(TicketType.valueOf(scanner.nextLine()));
+
+            ticketInProgress.addTypes(TicketType.valueOf(String.valueOf(scanner.nextLine())));
         }
-        return ticketTypes;
+        return ticketInProgress.getTypes();
     }
 
+    public void selectSeats() {
+        while (ticketInProgress.getSeats().size() < ticketInProgress.getQuantity()) {
+            System.out.println("Please select your Row ");
+            Scanner scanner = new Scanner(System.in);
+            int row = Integer.parseInt(scanner.nextLine());
+            System.out.println("Please select your Number ");
+            int number = Integer.parseInt(scanner.nextLine());
+            Seat temporarySeat = new Seat(row, number, true);
+            if (cinemaHall.isTheSeatAvailable(temporarySeat)) {
+                ticketInProgress.addSeats(temporarySeat);
+            } else {
+                System.out.println("The seat you selected is not available, please try again.");
+            }
+        }
+    }
 
     public Client addClient() {
         System.out.println("Please add your first name ");
@@ -129,26 +147,37 @@ public class Cinema {
         System.out.println("Please add your e-mail ");
         String email = scanner.nextLine();
         Client client = new Client(firstName, lastName, phoneNumber, email);
-        theClient = client;
-        return theClient;
-    }
-
-    private Ticket reservedTicket;
-
-    public Ticket reserveTicket() {
-        reservedTicket = new Ticket(theClient, ticketQuantity, ticketTypes, selectedMovie);
-        return null;
+        ticketInProgress.setClient(client);
+        return ticketInProgress.getClient();
     }
 
     public void displayReservation() {
-        System.out.println("\nDate " + selectedDate);
-        System.out.println("\nMovie " + selectedMovie);
-        System.out.println("\nHour " + selectedMovie.getMovieHour());
-        System.out.println("\nTicket quantity " + ticketQuantity);
-        System.out.println("\nTicket types " + ticketTypes);
-        System.out.println("\nCinemaHall " + selectedMovie.getCinemaHall());
-        System.out.println("\nClient" + theClient);
+        System.out.println("Date " + ticketInProgress.getDate());
+        System.out.println("Movie " + ticketInProgress.getMovie());
+        System.out.println("Hour " + ticketInProgress.getHour());
+        System.out.println("Ticket quantity " + ticketInProgress.getQuantity());
+        System.out.println("Ticket types " + ticketInProgress.getTypes());
+        System.out.println("CinemaHall " + ticketInProgress.getCinemaHall().getName());
+        System.out.println("Seats " + ticketInProgress.getSeats());
+        System.out.println("Client" + ticketInProgress.getClient());
+    }
 
+    public void reserveTicket() {
+        System.out.println("Do you want to reserve the ticket? Y/N");
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.nextLine().toString().equals("Y"))  {
+            historyOfReservations.add(ticketInProgress);
+            reserveTheSelectedSeats();
+            ticketInProgress = null;
+            System.out.println("Congratulation, you reserved a ticket" + historyOfReservations);
+
+        }
+    }
+
+    public void reserveTheSelectedSeats() {
+        for (Seat s : ticketInProgress.getSeats()) {
+            cinemaHall.reserveSeat(s);
+        }
     }
 
 

@@ -11,7 +11,6 @@ public class Seat {
         this.available = available;
     }
 
-
     public int getRow() {
         return row;
     }
@@ -43,5 +42,25 @@ public class Seat {
                 ", number=" + number +
                 ", available=" + available +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Seat seat = (Seat) o;
+
+        if (row != seat.row) return false;
+        if (number != seat.number) return false;
+        return available == seat.available;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = row;
+        result = 31 * result + number;
+        result = 31 * result + (available ? 1 : 0);
+        return result;
     }
 }

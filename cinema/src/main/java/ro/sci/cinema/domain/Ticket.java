@@ -7,17 +7,11 @@ public class Ticket extends AbstractModel {
     private Date date;
     private Movie movie;
     private Date hour;
+    private CinemaHall cinemaHall;
     private int quantity;
-    private ArrayList<TicketType> type;
-    private ArrayList<Seat> seats;
+    private ArrayList<TicketType> types = new ArrayList<>();
+    private ArrayList<Seat> seats = new ArrayList<>();
     private Client client;
-
-    public Ticket(Client client, int quantity, ArrayList<TicketType> type, Movie movie) {
-        this.client = client;
-        this.type = type;
-        this.movie = movie;
-        this.quantity = quantity;
-    }
 
 
     public Client getClient() {
@@ -28,12 +22,12 @@ public class Ticket extends AbstractModel {
         this.client = client;
     }
 
-    public ArrayList<TicketType> getType() {
-        return type;
+    public ArrayList<TicketType> getTypes() {
+        return types;
     }
 
-    public void setType(ArrayList<TicketType> type) {
-        this.type = type;
+    public void setTypes(ArrayList<TicketType> type) {
+        this.types = type;
     }
 
     public Movie getMovie() {
@@ -50,16 +44,6 @@ public class Ticket extends AbstractModel {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "client=" + client +
-                ", type=" + type +
-                ", movie=" + movie +
-                ", quantity=" + quantity +
-                '}';
     }
 
     public Date getDate() {
@@ -84,5 +68,34 @@ public class Ticket extends AbstractModel {
 
     public void setSeats(ArrayList<Seat> seats) {
         this.seats = seats;
+    }
+
+    public void addSeats(Seat s){
+        seats.add(s);
+    }
+
+    public void addTypes(TicketType t){
+        types.add(t);
+    }
+
+    public CinemaHall getCinemaHall() {
+        return cinemaHall;
+    }
+
+    public void setCinemaHall(CinemaHall cinemaHall) {
+        this.cinemaHall = cinemaHall;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "  \ndate=" + date +
+                ", \nmovie=" + movie +
+                ", \nhour=" + hour +
+                ", \nquantity=" + quantity +
+                ", \ntypes=" + types +
+                ", \nseats=" + seats +
+                ", \nclient=" + client +
+                '}';
     }
 }
