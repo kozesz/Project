@@ -10,6 +10,19 @@ import java.util.Scanner;
 public class CinemaHall {
     private String name;
     private ArrayList<Seat> allSeats = new ArrayList<>();
+
+    public ArrayList<Seat> getAllSeats() {
+        return allSeats;
+    }
+
+    public ArrayList<Seat> getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public ArrayList<Seat> getReservedSeats() {
+        return reservedSeats;
+    }
+
     private ArrayList<Seat> availableSeats = new ArrayList<>();
     private ArrayList<Seat> reservedSeats = new ArrayList<>();
 
@@ -17,14 +30,12 @@ public class CinemaHall {
         SeatCSVReader seatReader = new SeatCSVReader(new BufferedReader(new FileReader("Seats.csv")));
         List<Seat> mySeats = seatReader.readSeats();
         for (Seat s : mySeats) {
-            System.out.println("Row " + s.getRow() + " Number " + s.getNumber() + " Available " + s.isAvailable());
             allSeats.add(s);
         }
         seatReader.close();
     }
 
     public List<Seat> availableSeats() {
-        System.out.println("Available seats ");
         for (Seat s : allSeats) {
             if (s.isAvailable()) {
                 availableSeats.add(s);
