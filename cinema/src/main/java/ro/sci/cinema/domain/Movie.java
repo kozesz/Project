@@ -1,8 +1,12 @@
 package ro.sci.cinema.domain;
 
+import org.springframework.util.StringUtils;
+import ro.sci.cinema.service.ValidationException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Movie {
@@ -25,7 +29,6 @@ public class Movie {
         Date d = dt.parse(String.valueOf(getDate()));
         return d;
     }
-
 
     public Movie(String title, MovieGenre genre, MovieType type, String rating) {
         this.title = title;
@@ -75,5 +78,25 @@ public class Movie {
                 ", type=" + type +
                 ", rating='" + rating + '\'' +
                 '}';
+    }
+
+    private void validate(Movie movie) throws ValidationException{
+        Date currentDate = new Date();
+        List<String> errors = new LinkedList<String>();
+        if (StringUtils.isEmpty(movie.getTitle())) {
+            errors.add("Title is empty.");
+        }
+        if (movie.getGenre() == null) {
+            errors.add("Genre is empty.");
+        }
+        if (movie.getType() == null) {
+            errors.add("Type is empty.");
+        }
+        if (movie.getRating() == null) {
+            errors.add("Rating is empty.");
+        }
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors.toArray(new String[]{}));
+        }
     }
 }

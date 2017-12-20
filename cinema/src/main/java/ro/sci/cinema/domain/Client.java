@@ -1,16 +1,27 @@
 package ro.sci.cinema.domain;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.util.StringUtils;
 import ro.sci.cinema.service.ValidationException;
 
 import java.util.*;
 
 public class Client {
+    @NotEmpty
     private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String email;
 
+    @NotEmpty
+    private String lastName;
+
+    @NotEmpty
+    @NumberFormat(pattern = "^[0-9]{10}$")
+    private String phoneNumber;
+
+    @NotEmpty
+    @Email
+    private String email;
 
     public Client(String firstName, String lastName, String phoneNumber, String email) {
         this.firstName = firstName;
@@ -24,7 +35,6 @@ public class Client {
         if (StringUtils.isEmpty(client.getFirstName())) {
             errors.add("First Name is Empty");
         }
-
         if (StringUtils.isEmpty(client.getLastName())) {
             errors.add("Last Name is Empty");
         }
@@ -34,8 +44,6 @@ public class Client {
         if (StringUtils.isEmpty(client.getEmail())) {
             errors.add("E-mail is Empty");
         }
-
-
         if (!errors.isEmpty()) {
             throw new ValidationException(errors.toArray(new String[]{}));
         }

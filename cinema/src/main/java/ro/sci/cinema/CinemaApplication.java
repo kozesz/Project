@@ -21,6 +21,7 @@ public class CinemaApplication {
         cinema.displayMovieHours();
         System.out.println(cinema.selectMovieHour());
         cinema.displayCinemaHall();
+
         cinema.selectTicketQuantity();
         System.out.println(cinema.selectTicketType());
         cinema.displayAvailableSeats();

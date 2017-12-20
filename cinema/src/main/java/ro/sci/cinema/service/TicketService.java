@@ -51,42 +51,43 @@ public class TicketService {
         dao.update(ticket);
     }
 
-    private void validate(Ticket ticket) throws ValidationException {
-        /*Date currentDate = new Date();
-        List<String> errors = new LinkedList<String>();
-
-        if (ticket.getClient() == null) {
-            errors.add("Client is Empty");
-        }
-
-        if (ticket.getType() == null) {
-            errors.add("TicketType is Empty");
-        }
-
-        if (ticket.getMovie() == null) {
-            errors.add("Movie is Empty");
-        }
-
-
-        if (ticket.getDate() == null) {
-            errors.add("Date is Empty");
-        } else {
-            if (currentDate.after(ticket.getDate())) {
-                errors.add("Date is in the past");
-            }
-        }
-
-        if (!errors.isEmpty()) {
-            throw new ValidationException(errors.toArray(new String[]{}));
-        }*/
-    }
-
     public TicketDAO getDao() {
         return dao;
     }
 
     public void setDao(TicketDAO dao) {
         this.dao = dao;
+    }
+
+    private void validate(Ticket ticket) throws ValidationException {
+        Date currentDate = new Date();
+        List<String> errors = new LinkedList<String>();
+
+        if (ticket.getDate() == null) {
+            errors.add("The date of the movie is empty.");
+        } else {
+            if (currentDate.after(ticket.getDate())) {
+                errors.add("The date of the movie is in the past.");
+            }
+        }
+        if (StringUtils.isEmpty(ticket.getMovie())) {
+            errors.add("The movie is empty.");
+        }
+        if (ticket.getHour() == null) {
+            errors.add("The hour of the movie is empty.");
+        }
+        if (StringUtils.isEmpty(ticket.getCinemaHall())) {
+            errors.add("The cinemahall of the movie is empty.");
+        }
+        if (ticket.getQuantity() > 0) {
+            errors.add("The quantity of the tickets is null.");
+        }
+        if (ticket.getSeats() == null) {
+            errors.add("The hour of the movie is empty.");
+        }
+        if (StringUtils.isEmpty(ticket.getClient())) {
+            errors.add("The client is empty.");
+        }
     }
 
 
