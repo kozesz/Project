@@ -1,16 +1,21 @@
 package ro.sci.cinema.service;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import ro.sci.cinema.CinemaApplication;
+import ro.sci.cinema.dao.CinemaDAO;
+import ro.sci.cinema.dao.ProgramDAO;
 import ro.sci.cinema.dao.TicketDAO;
+import ro.sci.cinema.dao.MovieDAO;
+import ro.sci.cinema.domain.CinemaHall;
+import ro.sci.cinema.domain.Movie;
+import ro.sci.cinema.domain.MoviesFromProgram;
 import ro.sci.cinema.domain.Ticket;
 
 
@@ -18,6 +23,9 @@ public class TicketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketService.class);
 
     private TicketDAO dao;
+    private MovieDAO mdao;
+    private CinemaDAO cdao;
+    private ProgramDAO pdao;
 
     public Collection<Ticket> listAll() {
         return dao.getAll();
@@ -38,17 +46,31 @@ public class TicketService {
         return false;
     }
 
-    public Ticket get(Long id) {
+    public Ticket getTicket(Long id) {
         LOGGER.debug("Getting ticket for id: " + id);
         return dao.findById(id);
+    }
+
+    public Movie getMovie(Long id) {
+        LOGGER.debug("Getting movie for id: " + id);
+        return mdao.findById(id);
 
     }
 
-    public void save(Ticket ticket) throws ValidationException {
+    public void saveTicket(Ticket ticket) throws ValidationException {
         LOGGER.debug("Saving: " + ticket);
-        validate(ticket);
-
+        validateTicket(ticket);
         dao.update(ticket);
+    }
+
+    public void saveMovie(Movie movie) throws ValidationException {
+        LOGGER.debug("Saving: " + movie);
+        mdao.update(movie);
+    }
+
+    public void saveProgram(MoviesFromProgram moviesFromProgram){
+        LOGGER.debug("Saving: " + moviesFromProgram);
+        pdao.update(moviesFromProgram);
     }
 
     public TicketDAO getDao() {
@@ -59,7 +81,7 @@ public class TicketService {
         this.dao = dao;
     }
 
-    private void validate(Ticket ticket) throws ValidationException {
+    private void validateTicket(Ticket ticket) throws ValidationException {
         Date currentDate = new Date();
         List<String> errors = new LinkedList<String>();
 

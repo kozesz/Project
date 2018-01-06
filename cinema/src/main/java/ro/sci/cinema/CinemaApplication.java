@@ -1,5 +1,6 @@
 package ro.sci.cinema;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ro.sci.cinema.domain.Cinema;
 import ro.sci.cinema.domain.CinemaHall;
@@ -11,7 +12,10 @@ import java.text.ParseException;
 public class CinemaApplication {
 
     public static void main(String[] args) throws ParseException, IOException {
-        Cinema cinema = new Cinema();
+
+        SpringApplication.run(CinemaApplication.class, args);
+
+        /*Cinema cinema = new Cinema();
 
         cinema.readProgram();
         cinema.readMyMovies();
@@ -29,8 +33,7 @@ public class CinemaApplication {
         cinema.addClient();
         cinema.displayReservation();
         cinema.reserveTicket();
+        */
 
-
-        //SpringApplication.run(CinemaApplication.class, args);
     }
 }

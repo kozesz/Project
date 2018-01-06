@@ -3,32 +3,16 @@ package ro.sci.cinema.domain;
 import org.springframework.util.StringUtils;
 import ro.sci.cinema.service.ValidationException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Movie {
+public class Movie extends AbstractModel {
     private String title;
     private MovieGenre genre;
     private MovieType type;
     private String rating;
-    private Date date;
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Date getformatedDate() throws ParseException {
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-        Date d = dt.parse(String.valueOf(getDate()));
-        return d;
-    }
 
     public Movie(String title, MovieGenre genre, MovieType type, String rating) {
         this.title = title;

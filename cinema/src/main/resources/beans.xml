@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
-	<bean id="imDAO" class="ro.sci.ems.dao.inmemory.IMEmployeeDAO"/>
-	<bean id="employeeService" class="ro.sci.ems.service.EmployeeService">
+	<bean id="imDAO" class="ro.sci.cinema.dao.inmemory.IMTicketDAO"/>
+	<bean id="ticketService" class="ro.sci.cinema.service.TicketService">
 	    <property name="dao" ref="imDAO" />
 	</bean>
 
