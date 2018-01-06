@@ -1,7 +1,5 @@
 package ro.sci.cinema.domain;
 
-import javax.xml.bind.SchemaOutputResolver;
-import javax.xml.bind.ValidationException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,10 +8,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Cinema {
+public class Cinema extends AbstractModel{
     private CinemaHall cinemaHall = new CinemaHall();
     private ArrayList<MoviesFromProgram> program = new ArrayList<>();
-    private Ticket ticketInProgress = new Ticket();
+    public Ticket ticketInProgress = new Ticket();
     private ArrayList<Movie> allMovies = new ArrayList<>();
     private ArrayList<Movie> listMovies = new ArrayList<>();
     private ArrayList<Ticket> historyOfReservations = new ArrayList<>();
@@ -35,14 +33,14 @@ public class Cinema {
         return ticketInProgress.getDate();
     }
 
-    public void readMyMovies() throws IOException, ParseException {
+    public ArrayList<Movie> readMyMovies() throws IOException, ParseException {
         MovieCSVReader movieReader = new MovieCSVReader(new BufferedReader(new FileReader("Movies.csv")));
         List<Movie> myMovies = movieReader.readMovies();
         for (Movie movie : myMovies) {
             allMovies.add(movie);
-            System.out.println(movie);
         }
         movieReader.close();
+        return allMovies;
     }
 
     public List<Movie> todaysMovies(Date date) {
@@ -73,16 +71,17 @@ public class Cinema {
         return ticketInProgress.getMovie();
     }
 
-    public void readProgram() throws ParseException, FileNotFoundException {
+    public Collection<MoviesFromProgram> programOfTheWeek() throws ParseException, FileNotFoundException {
         MoviesProgramForCurrentWeekCSVReader moviesProgramForCurrentWeekCSVReader = new MoviesProgramForCurrentWeekCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
         for (MoviesFromProgram moviesFromProgram : moviesProgramForCurrentWeekCSVReader.readMoviesProgram()) {
             program.add(moviesFromProgram);
         }
+        return program;
     }
 
     public void displayMovieHours() throws IOException, ParseException {
         for (MoviesFromProgram program : program) {
-            if (Objects.equals(ticketInProgress.getMovie().getTitle(), program.getTitle()) && ticketInProgress.getDate().equals(program.getDate())) {
+            if (Objects.equals(ticketInProgress.getMovie().getTitle(), program.getMovie().getTitle()) && ticketInProgress.getDate().equals(program.getDate())) {
                 System.out.println(program.getHour());
             }
         }
@@ -97,7 +96,7 @@ public class Cinema {
                 SimpleDateFormat hr = new SimpleDateFormat("HH:mm");
                 Date hour = hr.parse(h);
                 for (MoviesFromProgram p : program) {
-                    if (p.getTitle().equals(ticketInProgress.getMovie().getTitle()) && p.getHour().equals(hour))
+                    if (p.getMovie().getTitle().equals(ticketInProgress.getMovie().getTitle()) && p.getHour().equals(hour))
                         ticketInProgress.setHour(hour);
                 }
             } catch (ParseException e) {
@@ -109,7 +108,7 @@ public class Cinema {
 
     public void displayCinemaHall() throws ParseException, FileNotFoundException {
         for (MoviesFromProgram p : program) {
-            if (p.getTitle().equals(ticketInProgress.getMovie().getTitle()) && ticketInProgress.getDate().equals(p.getDate()) && ticketInProgress.getHour().equals(p.getHour())) {
+            if (p.getMovie().getTitle().equals(ticketInProgress.getMovie().getTitle()) && ticketInProgress.getDate().equals(p.getDate()) && ticketInProgress.getHour().equals(p.getHour())) {
 
                 ticketInProgress.setCinemaHall(p.getHall());
                 System.out.println(ticketInProgress.getCinemaHall().getName());
@@ -117,13 +116,12 @@ public class Cinema {
         }
     }
 
-    public void getAvailableSeats() throws IOException {
-        cinemaHall.readAllSeats();
-        cinemaHall.availableSeats();
+    public ArrayList<Seat> getAllSeats() throws IOException {
+        return cinemaHall.readAllSeats();
     }
 
-    public void displayAvailableSeats(){
-        System.out.println(cinemaHall.getAvailableSeats());
+    public ArrayList<Seat> getAvailableSeats() throws IOException {
+        return cinemaHall.availableSeats();
     }
 
     public int selectTicketQuantity() throws IOException {
@@ -159,6 +157,10 @@ public class Cinema {
             }
         }
         return ticketInProgress.getTypes();
+    }
+
+    public void addSeat(Seat seat) {
+        ticketInProgress.addSeats(seat);
     }
 
     public void selectSeats() {

@@ -4,15 +4,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MoviesFromProgram {
+public class MoviesFromProgram extends AbstractModel{
     private Date date;
-    private String title;
+    private Movie movie;
     private Date hour;
     private CinemaHall hall;
 
-    public MoviesFromProgram(Date date, String title, Date hour, CinemaHall hall) {
+    public MoviesFromProgram(Date date, Movie movie, Date hour, CinemaHall hall) {
         this.date = date;
-        this.title = title;
+        this.movie = movie;
         this.hour = hour;
         this.hall = hall;
     }
@@ -25,12 +25,12 @@ public class MoviesFromProgram {
         this.date = date;
     }
 
-    public String getTitle() {
-        return title;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     public Date getHour() {
