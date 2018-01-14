@@ -1,10 +1,9 @@
 package ro.sci.cinema.dao;
 
-import ro.sci.cinema.domain.MoviesFromProgram;
-
+import ro.sci.cinema.domain.Program;
 import java.util.Collection;
 
-public interface ProgramDAO extends BaseDAO {
+public interface ProgramDAO extends BaseDAO<Program> {
 
-    Collection<MoviesFromProgram> searchByName(String query);
+    Collection<Program> searchByName(String query);
 }

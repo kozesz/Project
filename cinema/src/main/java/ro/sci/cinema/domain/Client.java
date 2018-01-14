@@ -8,7 +8,7 @@ import ro.sci.cinema.service.ValidationException;
 
 import java.util.*;
 
-public class Client {
+public class Client extends AbstractModel {
     @NotEmpty
     private String firstName;
 
@@ -23,12 +23,12 @@ public class Client {
     @Email
     private String email;
 
-    public Client(String firstName, String lastName, String phoneNumber, String email) {
+    /*public Client(String firstName, String lastName, String phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.email = email;
-    }
+    }*/
 
     public void validate(Client client) throws ValidationException {
         List<String> errors = new LinkedList<String>();
@@ -89,5 +89,27 @@ public class Client {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        if (firstName != null ? !firstName.equals(client.firstName) : client.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(client.lastName) : client.lastName != null) return false;
+        if (phoneNumber != null ? !phoneNumber.equals(client.phoneNumber) : client.phoneNumber != null) return false;
+        return email != null ? email.equals(client.email) : client.email == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = firstName != null ? firstName.hashCode() : 0;
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
     }
 }

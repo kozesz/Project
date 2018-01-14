@@ -9,10 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Cinema extends AbstractModel{
-    private CinemaHall cinemaHall = new CinemaHall();
-    private ArrayList<MoviesFromProgram> program = new ArrayList<>();
-    public Ticket ticketInProgress = new Ticket();
-    private ArrayList<Movie> allMovies = new ArrayList<>();
+
+    /*public Ticket ticketInProgress = new Ticket();
+
     private ArrayList<Movie> listMovies = new ArrayList<>();
     private ArrayList<Ticket> historyOfReservations = new ArrayList<>();
 
@@ -33,15 +32,7 @@ public class Cinema extends AbstractModel{
         return ticketInProgress.getDate();
     }
 
-    public ArrayList<Movie> readMyMovies() throws IOException, ParseException {
-        MovieCSVReader movieReader = new MovieCSVReader(new BufferedReader(new FileReader("Movies.csv")));
-        List<Movie> myMovies = movieReader.readMovies();
-        for (Movie movie : myMovies) {
-            allMovies.add(movie);
-        }
-        movieReader.close();
-        return allMovies;
-    }
+
 
     public List<Movie> todaysMovies(Date date) {
         for (Movie movie : allMovies) {
@@ -71,13 +62,9 @@ public class Cinema extends AbstractModel{
         return ticketInProgress.getMovie();
     }
 
-    public Collection<MoviesFromProgram> programOfTheWeek() throws ParseException, FileNotFoundException {
-        MoviesProgramForCurrentWeekCSVReader moviesProgramForCurrentWeekCSVReader = new MoviesProgramForCurrentWeekCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
-        for (MoviesFromProgram moviesFromProgram : moviesProgramForCurrentWeekCSVReader.readMoviesProgram()) {
-            program.add(moviesFromProgram);
-        }
-        return program;
-    }
+
+
+
 
     public void displayMovieHours() throws IOException, ParseException {
         for (MoviesFromProgram program : program) {
@@ -116,9 +103,6 @@ public class Cinema extends AbstractModel{
         }
     }
 
-    public ArrayList<Seat> getAllSeats() throws IOException {
-        return cinemaHall.readAllSeats();
-    }
 
     public ArrayList<Seat> getAvailableSeats() throws IOException {
         return cinemaHall.availableSeats();
@@ -221,6 +205,6 @@ public class Cinema extends AbstractModel{
             cinemaHall.reserveSeat(s);
         }
     }
-
+*/
 
 }

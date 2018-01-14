@@ -35,20 +35,12 @@ public class Ticket extends AbstractModel {
     private Client client;
 
 
-    public Client getClient() {
-        return client;
+    public Date getDate() {
+        return date;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public ArrayList<TicketType> getTypes() {
-        return types;
-    }
-
-    public void setTypes(ArrayList<TicketType> type) {
-        this.types = type;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Movie getMovie() {
@@ -59,44 +51,12 @@ public class Ticket extends AbstractModel {
         this.movie = movie;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public Date getHour() {
         return hour;
     }
 
     public void setHour(Date hour) {
         this.hour = hour;
-    }
-
-    public ArrayList<Seat> getSeats() {
-        return seats;
-    }
-
-    public void setSeats(ArrayList<Seat> seats) {
-        this.seats = seats;
-    }
-
-    public void addSeats(Seat s){
-        seats.add(s);
-    }
-
-    public void addTypes(TicketType t){
-        types.add(t);
     }
 
     public CinemaHall getCinemaHall() {
@@ -107,17 +67,36 @@ public class Ticket extends AbstractModel {
         this.cinemaHall = cinemaHall;
     }
 
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "  \ndate=" + date +
-                ", \nmovie=" + movie +
-                ", \nhour=" + hour +
-                ", \nquantity=" + quantity +
-                ", \ntypes=" + types +
-                ", \nseats=" + seats +
-                ", \nclient=" + client +
-                '}';
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public ArrayList<TicketType> getTypes() {
+        return types;
+    }
+
+    public void setTypes(ArrayList<TicketType> types) {
+        this.types = types;
+    }
+
+    public ArrayList<Seat> getSeats() {
+        return seats;
+    }
+
+    public void setSeats(ArrayList<Seat> seats) {
+        this.seats = seats;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
@@ -148,5 +127,19 @@ public class Ticket extends AbstractModel {
         result = 31 * result + (seats != null ? seats.hashCode() : 0);
         result = 31 * result + (client != null ? client.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "date=" + date +
+                ", movie=" + movie +
+                ", hour=" + hour +
+                ", cinemaHall=" + cinemaHall +
+                ", quantity=" + quantity +
+                ", types=" + types +
+                ", seats=" + seats +
+                ", client=" + client +
+                '}';
     }
 }

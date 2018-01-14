@@ -1,6 +1,6 @@
 package ro.sci.cinema.domain;
 
-public class Seat {
+public class Seat extends AbstractModel {
     private int row;
     private int number;
     private boolean available;

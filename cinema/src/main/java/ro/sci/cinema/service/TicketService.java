@@ -1,87 +1,92 @@
 package ro.sci.cinema.service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-import ro.sci.cinema.CinemaApplication;
-import ro.sci.cinema.dao.CinemaDAO;
-import ro.sci.cinema.dao.ProgramDAO;
-import ro.sci.cinema.dao.TicketDAO;
-import ro.sci.cinema.dao.MovieDAO;
-import ro.sci.cinema.domain.CinemaHall;
-import ro.sci.cinema.domain.Movie;
-import ro.sci.cinema.domain.MoviesFromProgram;
-import ro.sci.cinema.domain.Ticket;
+import ro.sci.cinema.dao.*;
+import ro.sci.cinema.domain.*;
 
 
 public class TicketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketService.class);
 
-    private TicketDAO dao;
-    private MovieDAO mdao;
-    private CinemaDAO cdao;
-    private ProgramDAO pdao;
+    private TicketDAO tdao;
+    private ArrayList<Program> program = new ArrayList<>();
+
+    public ArrayList<Movie> readMyMovies() throws IOException, ParseException {
+        MovieCSVReader movieReader = new MovieCSVReader(new BufferedReader(new FileReader("Movies.csv")));
+        List<Movie> myMovies = movieReader.readMovies();
+        ArrayList<Movie> allMovies = new ArrayList<>();
+        for (Movie movie : myMovies) {
+            allMovies.add(movie);
+        }
+        movieReader.close();
+        return allMovies;
+    }
+
+    public Collection<Program> programOfTheWeek() throws ParseException, FileNotFoundException {
+        ProgramCSVReader programCSVReader = new ProgramCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
+        for (Program moviesFromProgram : programCSVReader.readMoviesProgram()) {
+            program.add(moviesFromProgram);
+        }
+        return program;
+    }
+
+    public ArrayList<Program> getProgramForToday(Date date){
+        ArrayList<Program> ppp = new ArrayList<>();
+        for (Program p : program){
+            if (p.getDate().equals(date))
+                ppp.add(p);
+        }
+        return ppp;
+    }
+
+    public Collection<TicketType> getTicketTypes() {
+        Collection<TicketType> allTypes = new ArrayList<>();
+        for (TicketType t : TicketType.values()) {
+            allTypes.add(t);
+        }
+        return allTypes;
+    }
 
     public Collection<Ticket> listAll() {
-        return dao.getAll();
+        return tdao.getAll();
     }
 
     public Collection<Ticket> search(String query) {
         LOGGER.debug("Searching for " + query);
-        return dao.searchByName(query);
+        return tdao.searchByName(query);
     }
 
     public boolean delete(Long id) {
         LOGGER.debug("Deleting ticket for id: " + id);
-        Ticket ticket = dao.findById(id);
+        Ticket ticket = tdao.findById(id);
         if (ticket != null) {
-            dao.delete(ticket);
+            tdao.delete(ticket);
             return true;
         }
         return false;
     }
 
-    public Ticket getTicket(Long id) {
+    public Ticket get(Long id) {
         LOGGER.debug("Getting ticket for id: " + id);
-        return dao.findById(id);
+        return tdao.findById(id);
     }
 
-    public Movie getMovie(Long id) {
-        LOGGER.debug("Getting movie for id: " + id);
-        return mdao.findById(id);
-
-    }
-
-    public void saveTicket(Ticket ticket) throws ValidationException {
+    public void save(Ticket ticket) throws ValidationException {
         LOGGER.debug("Saving: " + ticket);
-        validateTicket(ticket);
-        dao.update(ticket);
+        //validate(ticket);
+        tdao.update(ticket);
     }
 
-    public void saveMovie(Movie movie) throws ValidationException {
-        LOGGER.debug("Saving: " + movie);
-        mdao.update(movie);
-    }
-
-    public void saveProgram(MoviesFromProgram moviesFromProgram){
-        LOGGER.debug("Saving: " + moviesFromProgram);
-        pdao.update(moviesFromProgram);
-    }
-
-    public TicketDAO getDao() {
-        return dao;
-    }
-
-    public void setDao(TicketDAO dao) {
-        this.dao = dao;
-    }
-
-    private void validateTicket(Ticket ticket) throws ValidationException {
+    private void validate(Ticket ticket) throws ValidationException {
         Date currentDate = new Date();
         List<String> errors = new LinkedList<String>();
 
@@ -110,6 +115,14 @@ public class TicketService {
         if (StringUtils.isEmpty(ticket.getClient())) {
             errors.add("The client is empty.");
         }
+    }
+
+    public TicketDAO getDao() {
+        return tdao;
+    }
+
+    public void setDao(TicketDAO dao) {
+        this.tdao = dao;
     }
 
 
