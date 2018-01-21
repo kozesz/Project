@@ -24,9 +24,11 @@ public class CinemaHallService {
     private ArrayList<Seat> reservedSeats = new ArrayList<>();
 
 
-    public ArrayList<Seat> readAllSeats() throws IOException {
+    public ArrayList<Seat> readAllSeats(CinemaHall cinemaHall) throws IOException {
         SeatCSVReader seatReader = new SeatCSVReader(new BufferedReader(new FileReader("Seats.csv")));
-        List<Seat> mySeats = seatReader.readSeats();
+        List<Seat> mySeats = seatReader.readSeats(cinemaHall);
+
+        allSeats.removeAll(allSeats);
         for (Seat s : mySeats) {
             allSeats.add(s);
         }
@@ -51,14 +53,14 @@ public class CinemaHallService {
         return chdao.getAll();
     }
 
-    public Collection<CinemaHall> search( String query) {
+    public Collection<CinemaHall> search(String query) {
         LOGGER.debug("Searching for " + query);
         return chdao.searchByName(query);
     }
 
     public boolean delete(Long id) {
         LOGGER.debug("Deleting cinemaHall for id: " + id);
-        CinemaHall cinemaHall  = chdao.findById(id);
+        CinemaHall cinemaHall = chdao.findById(id);
         if (cinemaHall != null) {
             chdao.delete(cinemaHall);
             return true;
@@ -79,7 +81,8 @@ public class CinemaHallService {
         chdao.update(cinemaHall);
     }
 
-    private void validate(CinemaHall cinemaHall) throws ValidationException {}
+    private void validate(CinemaHall cinemaHall) throws ValidationException {
+    }
 
     public CinemaHallDAO getChdao() {
         return chdao;

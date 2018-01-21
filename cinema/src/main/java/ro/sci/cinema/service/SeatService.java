@@ -6,6 +6,8 @@ import ro.sci.cinema.dao.SeatDAO;
 import ro.sci.cinema.domain.Seat;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SeatService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeatService.class);
@@ -44,7 +46,9 @@ public class SeatService {
         sdao.update(seat);
     }
 
-    private void validate(Seat seat) throws ValidationException {}
+    private void validate(Seat seat) throws ValidationException {
+
+    }
 
 
     public SeatDAO getSdao() {

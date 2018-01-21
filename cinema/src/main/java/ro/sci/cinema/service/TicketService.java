@@ -33,13 +33,16 @@ public class TicketService {
 
     public Collection<Program> programOfTheWeek() throws ParseException, FileNotFoundException {
         ProgramCSVReader programCSVReader = new ProgramCSVReader(new BufferedReader(new FileReader("MoviesProgramForCurrentWeek.csv")));
-        for (Program moviesFromProgram : programCSVReader.readMoviesProgram()) {
+        List<Program> programOfTheWeek = new ArrayList<>();
+        for (Program moviesFromProgram : programCSVReader.readProgram()) {
+            programOfTheWeek.add(moviesFromProgram);
             program.add(moviesFromProgram);
+
         }
-        return program;
+        return programOfTheWeek;
     }
 
-    public ArrayList<Program> getProgramForToday(Date date){
+    public ArrayList<Program> getProgramForToday(Date date) throws  ParseException {
         ArrayList<Program> ppp = new ArrayList<>();
         for (Program p : program){
             if (p.getDate().equals(date))

@@ -23,7 +23,7 @@ public class ProgramCSVReader extends Reader {
         return reader.read(cbuf, off, len);
     }
 
-    public List<Program> readMoviesProgram() throws ParseException {
+    public List<Program> readProgram() throws ParseException {
         try {
             String line = reader.readLine();
             ArrayList<Program> weeklyProgram = new ArrayList<>();
