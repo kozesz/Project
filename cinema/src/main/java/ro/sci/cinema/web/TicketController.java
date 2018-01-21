@@ -1,6 +1,5 @@
 package ro.sci.cinema.web;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ro.sci.cinema.domain.*;
 import ro.sci.cinema.service.*;
 
-
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -38,7 +37,7 @@ public class TicketController {
     @Autowired
     private SeatService seatService;
 
-    Ticket ticketInProgress = new Ticket();
+    private Ticket ticketInProgress = new Ticket();
 
     public TicketController() throws IOException, ParseException {
     }
@@ -46,7 +45,7 @@ public class TicketController {
     @RequestMapping({""})
     public ModelAndView list() throws ValidationException {
         ModelAndView result = new ModelAndView("ticket/start");
-        Collection<Ticket> ticketList = this.ticketService.listAll();
+        Collection<Ticket> ticketList = ticketService.listAll();
         result.addObject("tickets", ticketList);
         return result;
     }
@@ -70,7 +69,7 @@ public class TicketController {
     @RequestMapping({"select_date"})
     public ModelAndView selectDate() throws FileNotFoundException, ParseException {
         ModelAndView result = new ModelAndView("ticket/select_date");
-        Collection<Program> program = this.ticketService.programOfTheWeek();
+        Collection<Program> program = ticketService.programOfTheWeek();
         List<Date> dates = new ArrayList<>();
         for (Program p : program) {
             if (dates.contains(p.getDate())) {
@@ -85,23 +84,24 @@ public class TicketController {
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
         Date d = dt.parse(date);
         ticketInProgress.setDate(d);
+
         return "redirect:/ticket/select_movie";
     }
 
     @RequestMapping({"/select_movie"})
     public ModelAndView todaysMovies() throws IOException, ParseException {
         ModelAndView result = new ModelAndView("ticket/select_movie");
-        Collection<Program> programForToday = this.ticketService.getProgramForToday(ticketInProgress.getDate());
+        Collection<Program> programForToday = ticketService.getProgramForToday(ticketInProgress.getDate());
         result.addObject("prog", programForToday);
         return result;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/save_movie")
-    public String saveMovie(String hour) throws ParseException {
+    public String saveMovie(String hour) throws ParseException, FileNotFoundException {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         Date d = dt.parse(hour);
 
-        Collection<Program> programForToday = this.ticketService.getProgramForToday(ticketInProgress.getDate());
+        Collection<Program> programForToday = ticketService.getProgramForToday(ticketInProgress.getDate());
         for (Program p : programForToday) {
             if (p.getHour().equals(d)) {
                 ticketInProgress.setHour(p.getHour());
@@ -121,7 +121,7 @@ public class TicketController {
     @RequestMapping(method = RequestMethod.POST, value = "/save_ticketquantity")
     public String saveTicketQuantity(int quantity) throws IOException {
         ticketInProgress.setQuantity(quantity);
-        this.cinemaHallService.readAllSeats();
+        cinemaHallService.readAllSeats(ticketInProgress.getCinemaHall());
         return "redirect:/ticket/list_seat";
     }
 
@@ -129,7 +129,7 @@ public class TicketController {
     public ModelAndView getAllSeats() throws IOException, ParseException {
         ModelAndView result = new ModelAndView("ticket/list_seat");
 
-        Collection<Seat> seatList = this.cinemaHallService.getAllSeats();
+        Collection<Seat> seatList = cinemaHallService.getAllSeats();
         result.addObject("seats", seatList);
 
         return result;
@@ -139,14 +139,13 @@ public class TicketController {
     public String selectSeats(int row, int number) throws FileNotFoundException {
         String result;
         Seat s = new Seat(row, number, true);
-
-        for (Seat seats : this.cinemaHallService.getAllSeats()) {
+        for (Seat seats : cinemaHallService.getAllSeats()) {
             if (seats.getNumber() == s.getNumber() & seats.getRow() == s.getRow() & seats.isAvailable()) {
-                this.cinemaHallService.reserveSeat(s);
+                cinemaHallService.reserveSeat(s);
                 ticketInProgress.getSeats().add(s);
-
             }
         }
+
         if (ticketInProgress.getSeats().size() == ticketInProgress.getQuantity())
             result = "redirect:/ticket/select_type";
         else result = "redirect:/ticket/list_seat";
@@ -157,7 +156,7 @@ public class TicketController {
     @RequestMapping({"/select_type"})
     public ModelAndView selectTicketType() {
         ModelAndView result = new ModelAndView("ticket/select_type");
-        Collection<TicketType> types = this.ticketService.getTicketTypes();
+        Collection<TicketType> types = ticketService.getTicketTypes();
         result.addObject("types", types);
         return result;
     }
@@ -190,7 +189,7 @@ public class TicketController {
     }
 
     @RequestMapping({"/display_ticket_inprogress"})
-    public ModelAndView displayTicket()  {
+    public ModelAndView displayTicket() {
         ModelAndView result = new ModelAndView("ticket/display_ticket");
 
         result.addObject("inprogress", ticketInProgress);
@@ -199,19 +198,20 @@ public class TicketController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/save_ticket")
     public String saveTicket(Ticket thisTicket) throws ValidationException {
-        this.ticketService.save(ticketInProgress);
+        ticketService.save(ticketInProgress);
+
         return "redirect:/ticket";
     }
 
+    public void clearTicket(Ticket ticket) {
+        ticket.setDate(null);
+        ticket.setHour(null);
+        ticket.setMovie(null);
+        ticket.setCinemaHall(null);
+        ticket.setQuantity(0);
+        ticket.setTypes(null);
+        ticket.setSeats(null);
+        ticket.setClient(null);
 
-    @RequestMapping({"/get_ticket"})
-    public ModelAndView getTicket() {
-        ModelAndView result = new ModelAndView("ticket/get_ticket");
-        //result.addObject("tick", ticket);
-        return result;
     }
-
-
-
-
 }
