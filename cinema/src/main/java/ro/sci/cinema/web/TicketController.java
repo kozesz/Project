@@ -188,6 +188,14 @@ public class TicketController {
         return "redirect:/ticket/display_ticket_inprogress";
     }
 
+    @RequestMapping("/edit_client")
+    public ModelAndView editClient() {
+
+        ModelAndView result = new ModelAndView("ticket/edit_client");
+        result.addObject("client", ticketInProgress.getClient());
+        return result;
+    }
+
     @RequestMapping({"/display_ticket_inprogress"})
     public ModelAndView displayTicket() {
         ModelAndView result = new ModelAndView("ticket/display_ticket");
@@ -201,6 +209,20 @@ public class TicketController {
         ticketService.save(ticketInProgress);
 
         return "redirect:/ticket";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/no_ticket")
+    public String noTicket(Ticket thisTicket) throws ValidationException {
+        clearTicket(thisTicket);
+
+        return "redirect:/ticket";
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete_ticket")
+    public String deleteTicket(long id) throws ValidationException {
+        ticketService.delete(id);
+
+        return "redirect:/ticket/list_tickets";
     }
 
     public void clearTicket(Ticket ticket) {
